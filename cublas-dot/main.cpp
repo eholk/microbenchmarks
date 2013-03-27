@@ -44,7 +44,7 @@ double cublas_dot(int N, double *A, double *B) {
 int main() {
     cublasInit();
 
-    for(int i = 1; i <= 20; i++) {
+    for(int i = 1; i <= 134; i++) {
         const int N = 1000000 * i;
 
         double *A = generate_vector(N);
