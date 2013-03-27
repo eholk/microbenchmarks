@@ -23,6 +23,24 @@ double *generate_vector(int N) {
     return v;
 }
 
+double cublas_dot(int N, double *A, double *B) {
+    double *Ad;
+    double *Bd;
+    cublasAlloc(N, sizeof(double), (void **)&Ad);
+    cublasAlloc(N, sizeof(double), (void **)&Bd);
+
+    cublasSetVector(N, sizeof(double), A, 1, Ad, 1);
+    cublasSetVector(N, sizeof(double), B, 1, Bd, 1);
+
+    double dot = cublasDdot(N, Ad, 1, Bd, 1);
+    assert(cublasGetError() == CUBLAS_STATUS_SUCCESS);
+
+    cublasFree(Ad);
+    cublasFree(Bd);
+
+    return dot;
+}
+
 int main() {
     cublasInit();
 
@@ -45,22 +63,4 @@ int main() {
     }
 
     cublasShutdown();
-}
-
-double cublas_dot(int N, double *A, double *B) {
-    double *Ad;
-    double *Bd;
-    cublasAlloc(N, sizeof(double), (void **)&Ad);
-    cublasAlloc(N, sizeof(double), (void **)&Bd);
-
-    cublasSetVector(N, sizeof(double), A, 1, Ad, 1);
-    cublasSetVector(N, sizeof(double), B, 1, Bd, 1);
-
-    double dot = cublasDdot(N, Ad, 1, Bd, 1);
-    assert(cublasGetError() == CUBLAS_STATUS_SUCCESS);
-
-    cublasFree(Ad);
-    cublasFree(Bd);
-
-    return dot;
 }
