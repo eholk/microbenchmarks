@@ -1,3 +1,5 @@
 *.s
 fusion-g++*
 fusion-clang++*
+*.o
+*.bc

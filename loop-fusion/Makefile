@@ -8,7 +8,7 @@ clean:
 .PHONY: clang
 clang: fusion-clang++.s fusion-clang++.ll fusion-clang++
 
-CXXFLAGS = -O3
+CXXFLAGS = -O4
 
 fusion-g++.s : fusion.cpp
 	g++ -S $(CXXFLAGS) fusion.cpp -o fusion-g++.s
@@ -24,5 +24,9 @@ fusion-g++ : fusion.cpp
 	g++ $(CXXFLAGS) fusion.cpp -o fusion-g++
 
 fusion-clang++ : fusion.cpp
-	clang++ $(CXXFLAGS) fusion.cpp -o fusion-clang++
-
+	llvm-as llfuncs.ll > llfuncs.bc
+	clang++ -emit-llvm-bc $(CXXFLAGS) -c fusion.cpp -o fusion.bc
+	llvm-link llfuncs.bc fusion.bc -o all.bc
+	opt -O3 all.bc -o optimized.bc
+	llc optimized.bc -o fusion-clang++.s
+	clang++ fusion-clang++.s -o fusion-clang++
