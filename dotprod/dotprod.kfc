@@ -1,0 +1,9 @@
+;; This is known to work with Harlan version XXX
+
+(module
+  (import ffi)
+
+  (define (harlan_dot N pa pb)
+    (let ((a (import-float-vec pa N))
+          (b (import-float-vec pb N)))
+      (reduce + (kernel ((a a) (b b)) (* a b))))))

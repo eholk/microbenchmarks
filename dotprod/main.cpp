@@ -62,6 +62,7 @@ float avx_unroll_dot(int, float *, float *);
 float avx_unroll_prefetch_dot(int, float *, float *);
 float blas_dot(int, float *, float *);
 float cublas_dot(int, float *, float *);
+float harlan_dot(int N, float *A, float *B);
 
 int main() {
     auto N = (128 << 20) / sizeof(float);
@@ -85,11 +86,13 @@ int main() {
     TIME(avx_unroll_prefetch_dot);
     TIME(blas_dot);
 
-    cublasInit();
-    TIME(cublas_dot);
+    TIME(harlan_dot);
+
+    //cublasInit();
+    //TIME(cublas_dot);
 
 
-    cublasShutdown();
+    //cublasShutdown();
     free(A);
     free(B);
 }
