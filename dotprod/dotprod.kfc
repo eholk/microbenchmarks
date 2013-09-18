@@ -1,4 +1,5 @@
-;; This is known to work with Harlan version XXX
+;; This is known to work with Harlan version
+;; d0b78bc03c7d816e6e995a5407018a1e3896355e
 
 (module
   (import ffi)
