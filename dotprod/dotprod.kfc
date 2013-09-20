@@ -1,10 +1,14 @@
 ;; This is known to work with Harlan version
-;; d0b78bc03c7d816e6e995a5407018a1e3896355e
+;; 083c14cbb96203d5608860192bd45009d4dc43a8
 
 (module
   (import ffi)
 
+  (extern time-s () -> float)
+  
   (define (harlan_dot N pa pb)
-    (let ((a (import-float-vec pa N))
-          (b (import-float-vec pb N)))
-      (reduce + (kernel ((a a) (b b)) (* a b))))))
+    (let* ((a (import-float-vec pa N))
+           (b (import-float-vec pb N))
+           (dot
+            (reduce + (kernel ((a a) (b b)) (* a b)))))
+      dot)))
