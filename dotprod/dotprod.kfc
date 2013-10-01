@@ -7,8 +7,15 @@
   (extern time-s () -> float)
   
   (define (harlan_dot N pa pb)
-    (let* ((a (import-float-vec pa N))
+    (let* ((t0 (time-s))
+           (a (import-float-vec pa N))
+           (t1 (time-s))
            (b (import-float-vec pb N))
+           (t2 (time-s))
            (dot
-            (reduce + (kernel ((a a) (b b)) (* a b)))))
+            (reduce + (kernel ((a a) (b b)) (* a b))))
+           (t3 (time-s)))
+      (print "Import vector a time: ") (println (- t1 t0))
+      (print "Import vector b time: ") (println (- t2 t1))
+      (print "Kernel time: ") (println (- t3 t2))
       dot)))
