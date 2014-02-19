@@ -44,7 +44,7 @@ double cublas_dot(int N, double *A, double *B) {
 int main() {
     cublasInit();
 
-    for(int i = 1; i <= 134; i++) {
+    for(int i = 1; i <= 134; i+=2) {
         const int N = 1000000 * i;
 
         double *A = generate_vector(N);
@@ -52,7 +52,8 @@ int main() {
 
         long long start = PAPI_get_real_usec();
 
-        cublas_dot(N, A, B);
+        for(int i = 0; i < 10; ++i)
+            cublas_dot(N, A, B);
 
         long long stop = PAPI_get_real_usec();
 
