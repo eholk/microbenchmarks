@@ -6,8 +6,19 @@ endif
 
 all: example chunks
 
+plots: memcopy.csv memcopy-chunked.csv
+	python mkplots.py
+
+data: memcopy.csv memcopy-chunked.csv
+
 example: main.c
 	g++ -O2 -o example main.c $(CFLAGS)
 
 chunks: chunks.c
 	g++ -O2 -o chunks chunks.c $(CFLAGS)
+
+memcopy.csv: example
+	./example > memcopy.csv
+
+memcopy-chunked.csv: chunks
+	./chunks > memcopy-chunked.csv

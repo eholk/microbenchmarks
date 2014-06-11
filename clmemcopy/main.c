@@ -146,7 +146,7 @@ int main() {
                                          // returned event.
     check_status(status);
 
-    fprintf(stderr, "BYTES\tTIME (ms)\n");
+    fprintf(stderr, "BYTES,TIME (ms)\n");
 
     for(int i = 1; i <= SIZE; i <<= 1) {
         uint64_t start = time_ns();
@@ -165,7 +165,7 @@ int main() {
             check_status(status);
         }
         uint64_t stop = time_ns();
-        printf("%d\t%f\n",
+        printf("%d,%f\n",
                i, ((double)(stop - start)) / (1e6 * REPS));
     }
 

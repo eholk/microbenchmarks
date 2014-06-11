@@ -146,10 +146,11 @@ int main() {
                                          // returned event.
     check_status(status);
 
-    fprintf(stderr, "BYTES\tTIME (ms)\n");
+    fprintf(stderr, "BYTES,TIME (ms)\n");
 
     // i is the chunk size.
-    for(int i = 1024; i <= SIZE; i <<= 1) {
+    for(int i = 65536; i <= SIZE; i <<= 1) {
+		//fprintf(stderr, "chunk size %d\n", i);
         uint64_t start = time_ns();
         for(int j = 0; j < REPS; j++) {
             // Copy the data
@@ -168,7 +169,7 @@ int main() {
             }
         }
         uint64_t stop = time_ns();
-        printf("%d\t%f\n",
+        printf("%d,%f\n",
                i, ((double)(stop - start)) / (1e6 * REPS));
     }
 
