@@ -95,13 +95,13 @@ int main() {
 
 	long long start_mem = PAPI_get_real_usec();
 	cudaMemcpy(dbodies, bodies, SIZE, cudaMemcpyHostToDevice);
-	
+	cudaDeviceSynchronize();
 	long long start_compute = PAPI_get_real_usec();
-	const int BLOCK_SIZE = 1024;
+	const int BLOCK_SIZE = 32;
 	nbody<<<(N + BLOCK_SIZE - 1) / BLOCK_SIZE, BLOCK_SIZE>>>(N, dbodies, dforces);
-
+	cudaDeviceSynchronize();
 	long long stop_compute = PAPI_get_real_usec();
-
+	
 	cudaMemcpy(forces, dforces, SIZE, cudaMemcpyDeviceToHost);
 	cudaDeviceSynchronize();
 	long long stop_mem = PAPI_get_real_usec();
@@ -113,8 +113,8 @@ int main() {
 
 	cout << endl;
 
-	cout << "Time (total sec):   " << double(stop_mem - start_mem) / 1e9 << endl;
-	cout << "Time (compute sec): " << double(stop_compute - start_compute) / 1e9 << endl;
+	cout << "Time (total sec):   " << double(stop_mem - start_mem) / 1e6 << endl;
+	cout << "Time (compute sec): " << double(stop_compute - start_compute) / 1e6 << endl;
 
 	cudaFree(dbodies);
 	cudaFree(dforces);
