@@ -97,7 +97,7 @@ int main() {
 	cudaMemcpy(dbodies, bodies, SIZE, cudaMemcpyHostToDevice);
 	cudaDeviceSynchronize();
 	long long start_compute = PAPI_get_real_usec();
-	const int BLOCK_SIZE = 32;
+	const int BLOCK_SIZE = 64;
 	nbody<<<(N + BLOCK_SIZE - 1) / BLOCK_SIZE, BLOCK_SIZE>>>(N, dbodies, dforces);
 	cudaDeviceSynchronize();
 	long long stop_compute = PAPI_get_real_usec();
