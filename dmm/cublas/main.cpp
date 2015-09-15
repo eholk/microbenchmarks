@@ -9,6 +9,8 @@
 #include <cuda_runtime.h>
 #include <cublas_v2.h>
 
+#include "cppbench.hpp"
+
 using namespace std;
 
 cublasHandle_t handle;
@@ -71,6 +73,30 @@ void cublas_dmm(int N, float *A, float *B) {
     cudaFree(Cd);
 }
 
+class CublasDmmBenchmark : public Benchmark
+{
+	int N;
+	float *A;
+	float *B;
+	
+public:
+	CublasDmmBenchmark(int N) : N(N), A(nullptr), B(nullptr) {}
+	
+	virtual void setup() {
+		A = generate_vector(N);
+		B = generate_vector(N);
+	}
+
+	virtual void cleanup() {
+		delete A; A = nullptr;
+		delete B; B = nullptr;
+	}
+
+	virtual void run_iteration() {
+		cublas_dmm(N, A, B);
+	}
+};
+
 int main() {
 	cublasCreate(&handle);
 
@@ -81,20 +107,11 @@ int main() {
     for(int i = 1; i <= 134; i+=2) {
         const int N = 100 * i;
 
-        float *A = generate_vector(N);
-        float *B = generate_vector(N);
+        CublasDmmBenchmark bench(N);
 
-        long long start = PAPI_get_real_usec();
-
-        for(int i = 0; i < K; ++i)
-            cublas_dmm(N, A, B);
-
-        long long stop = PAPI_get_real_usec();
-
-        cout << N << "\t" << double(stop - start) / K << endl;
-
-        free(A);
-        free(B);
+        bench.run();
+        
+        cout << N << "\t" << bench.timePerIteration() / K << endl;
     }
 
     cublasDestroy(handle);

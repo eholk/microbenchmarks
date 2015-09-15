@@ -1,3 +1,6 @@
 [submodule "rust-opencl"]
 	path = rust-opencl
 	url = https://github.com/eholk/rust-opencl.git
+[submodule "cppbench"]
+	path = cppbench
+	url = git@github.com:eholk/cppbench.git
