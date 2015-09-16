@@ -102,18 +102,16 @@ int main() {
 
 	cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
 
-	const int K = 10;
-	
     for(int i = 1; i <= 134; i+=2) {
         const int N = 100 * i;
 
-        SimpleBenchmarkRunner runner;
+        AdvancedBenchmarkRunner runner;
         CublasDmmBenchmark bench(N);
 
         runner.run(bench);
         
-        cout << N << "\t" << runner.timePerIteration() / K << endl;
+        cout << N << "\t" << runner.timePerIteration() << "\t" << runner.getStdDev() << endl;
     }
-
+    
     cublasDestroy(handle);
 }
