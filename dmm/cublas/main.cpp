@@ -107,11 +107,12 @@ int main() {
     for(int i = 1; i <= 134; i+=2) {
         const int N = 100 * i;
 
+        SimpleBenchmarkRunner runner;
         CublasDmmBenchmark bench(N);
 
-        bench.run();
+        runner.run(bench);
         
-        cout << N << "\t" << bench.timePerIteration() / K << endl;
+        cout << N << "\t" << runner.timePerIteration() / K << endl;
     }
 
     cublasDestroy(handle);
