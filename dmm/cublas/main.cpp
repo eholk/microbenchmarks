@@ -109,8 +109,17 @@ int main() {
         CublasDmmBenchmark bench(N);
 
         runner.run(bench);
+
+        auto width = runner.confidenceWidth();
+        auto interval = runner.confidenceInterval();
         
-        cout << N << "\t" << runner.timePerIteration() << "\t" << runner.getStdDev() << endl;
+        cout << N
+             << "\t" << runner.timePerIteration()
+             << "\t" << runner.getStdDev()
+             << "\t" << width
+             << "\t" << get<0>(interval)
+             << "\t" << get<1>(interval)
+             << endl;
     }
     
     cublasDestroy(handle);
