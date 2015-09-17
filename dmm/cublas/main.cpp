@@ -102,6 +102,10 @@ int main() {
 
 	cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
 
+    cout << "---" << endl;
+    cout << "name: cublas-dmm" << endl;
+
+    cout << "results:" << endl;
     for(int i = 1; i <= 134; i+=2) {
         const int N = 100 * i;
 
@@ -112,15 +116,25 @@ int main() {
 
         auto width = runner.confidenceWidth();
         auto interval = runner.confidenceInterval();
-        
-        cout << N
-             << "\t" << runner.timePerIteration()
-             << "\t" << runner.getStdDev()
-             << "\t" << width
-             << "\t" << get<0>(interval)
-             << "\t" << get<1>(interval)
+
+        cout << "- matrix_size: " << N << endl;
+
+        cout << "  raw_data:" << endl
+             << "    total_time:" << endl;
+        for(auto i = 0; i < runner.getNumTrials(); ++i) {
+            cout << "    - " << runner.getSample(i) << endl;
+        }
+
+        cout << "  summary:" << endl
+             << "    total_time:" << endl
+             << "      sample_size:         " << runner.getNumTrials() << endl
+             << "      mean:                " << runner.timePerIteration() << endl
+             << "      std_dev:             " << runner.getStdDev() << endl
+             << "      confidence_width:    " << width << endl
+             << "      confidence_interval: [" << get<0>(interval) << ", " << get<1>(interval) << "]"
              << endl;
     }
-    
+
     cublasDestroy(handle);
+    cout << "..." << endl;
 }
