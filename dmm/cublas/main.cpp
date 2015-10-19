@@ -111,6 +111,7 @@ int main() {
         AdvancedBenchmarkRunner runner;
         CublasDmmBenchmark bench(N);
 
+        runner.setNumTrials(50);
         runner.run(bench);
 
         auto width = runner.confidenceWidth();
