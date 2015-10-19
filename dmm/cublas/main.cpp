@@ -105,9 +105,7 @@ int main() {
     cout << "name: cublas-dmm" << endl;
 
     cout << "results:" << endl;
-    for(int i = 1; i <= 80; i+=2) {
-        const int N = 100 * i;
-
+    for(int N = 1; i <= 634; i+=2) {
         AdvancedBenchmarkRunner runner;
         CublasDmmBenchmark bench(N);
 
