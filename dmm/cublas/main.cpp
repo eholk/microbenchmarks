@@ -102,7 +102,6 @@ int main() {
 
 	cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_HOST);
 
-    cout << "---" << endl;
     cout << "name: cublas-dmm" << endl;
 
     cout << "results:" << endl;
@@ -136,5 +135,4 @@ int main() {
     }
 
     cublasDestroy(handle);
-    cout << "..." << endl;
 }
