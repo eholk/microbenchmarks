@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <utility>
+
+#include "dmm_kernel.h"
 
 using namespace std;
 using namespace cl;
@@ -35,6 +38,17 @@ int main(int argc, const char **argv) {
 	     << (device.getInfo<CL_DEVICE_TYPE>() & CL_DEVICE_TYPE_CPU ?
 	         "cpu" : "gpu")
 	     << endl;
+
+	// create and build the program.
+	auto prog_devices = std::vector<Device>({device});
+	Context ctx(prog_devices);
+	std::vector<std::pair<const char*, ::size_t>> src = {
+		make_pair((const char *)dmm_kernel_cl,
+		          (::size_t)dmm_kernel_cl_len)
+	};
+	Program prog(ctx, src);
+	prog.build(prog_devices);
+	cout << "# built program" << endl;
 	
 	return 1;
 }
