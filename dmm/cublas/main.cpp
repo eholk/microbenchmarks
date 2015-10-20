@@ -3,13 +3,12 @@
 #include <iomanip>
 
 #include <string.h>
-#include <malloc.h>
 #include <papi.h>
 
 #include <cuda_runtime.h>
 #include <cublas_v2.h>
 
-#include "cppbench.hpp"
+#include "../common.hpp"
 
 using namespace std;
 
@@ -33,18 +32,6 @@ void cublas_report(cublasStatus_t status) {
 	check(CUBLAS_STATUS_NOT_SUPPORTED);
 	check(CUBLAS_STATUS_LICENSE_ERROR);
 #undef check
-}
-
-// Generate a random vector
-float *generate_vector(int N) {
-    float *v = (float *)memalign(32,
-                                   sizeof(float) * N * N);
-
-    for(int i = 0; i < N * N; ++i) {
-        v[i] = 1.0;
-    }
-
-    return v;
 }
 
 void cublas_dmm(int N, float *A, float *B) {
@@ -73,25 +60,11 @@ void cublas_dmm(int N, float *A, float *B) {
     cudaFree(Cd);
 }
 
-class CublasDmmBenchmark : public Benchmark
-{
-	int N;
-	float *A;
-	float *B;
-	
+class CublasDmmBenchmark : public DmmBenchmark
+{	
 public:
-	CublasDmmBenchmark(int N) : N(N), A(nullptr), B(nullptr) {}
+	CublasDmmBenchmark(int N) : DmmBenchmark(N) {}
 	
-	virtual void setup() {
-		A = generate_vector(N);
-		B = generate_vector(N);
-	}
-
-	virtual void cleanup() {
-		delete A; A = nullptr;
-		delete B; B = nullptr;
-	}
-
 	virtual void run_iteration() {
 		cublas_dmm(N, A, B);
 	}

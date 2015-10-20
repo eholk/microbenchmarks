@@ -6,9 +6,30 @@
 #include <utility>
 
 #include "dmm_kernel.h"
+#include "../common.hpp"
 
 using namespace std;
 using namespace cl;
+
+class OpenCLDmmBenchmark : public DmmBenchmark
+{
+	Context &ctx;
+	CommandQueue &queue;
+	Kernel &k;
+	
+public:
+	OpenCLDmmBenchmark(Kernel &k, Context &ctx, CommandQueue &queue, int N)
+		: ctx(ctx), queue(queue), DmmBenchmark(N)
+	{}
+
+	virtual void run_iteration() {
+		Buffer clA(A, A + N * N, true),
+			clB(B, B + N * N, true),
+			clC(CL_MEM_WRITE_ONLY, N * N * sizeof(A[0]));
+
+		// TODO:
+	}
+};
 
 int main(int argc, const char **argv) {
 	cout << "name: opencl-dmm" << endl;
