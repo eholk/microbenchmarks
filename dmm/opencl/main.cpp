@@ -49,6 +49,12 @@ int main(int argc, const char **argv) {
 	Program prog(ctx, src);
 	prog.build(prog_devices);
 	cout << "# built program" << endl;
+
+	auto status = prog.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(device);
+	if(status != CL_BUILD_SUCCESS) {
+		cerr << "# Program build failure!" << endl;
+		cerr << prog.getBuildInfo<CL_PROGRAM_BUILD_LOG>(device);
+	}
 	
 	return 1;
 }
