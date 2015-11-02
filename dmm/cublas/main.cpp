@@ -63,7 +63,7 @@ void cublas_dmm(int N, float *A, float *B) {
 class CublasDmmBenchmark : public DmmBenchmark
 {	
 public:
-	CublasDmmBenchmark(int N) : DmmBenchmark(N) {}
+	CublasDmmBenchmark(int N, Params &params) : DmmBenchmark(N) {}
 	
 	virtual void run_iteration() {
 		cublas_dmm(N, A, B);

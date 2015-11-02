@@ -24,6 +24,8 @@ protected:
 	float *C;
 	
 public:
+	struct Params {};
+	
 	DmmBenchmark(int N) : N(N), A(nullptr), B(nullptr) {}
 	
 	virtual void setup() {
@@ -40,7 +42,8 @@ public:
 };
 
 template<class Benchmark>
-void run_benchmark(typename Benchmark::Params &&params) {
+void run_benchmark(typename Benchmark::Params &&params
+                   = typename Benchmark::Params()) {
     cout << "results:" << endl;
     for(int N = 1; N <= 634; N+=2) {
         AdvancedBenchmarkRunner runner;
