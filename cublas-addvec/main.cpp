@@ -53,8 +53,7 @@ int main() {
         float *A = generate_vector(N);
         float *B = generate_vector(N);
 
-        cout << "results:" << endl
-             << "- vector_size: " << N << endl
+        cout << "- vector_size: " << N << endl
              << "  raw_data:" << endl
              << "    total_time:" << endl;
         
