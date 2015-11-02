@@ -22,3 +22,7 @@ memcopy.csv: example
 
 memcopy-chunked.csv: chunks
 	./chunks > memcopy-chunked.csv
+
+.phony: clean
+clean:
+	rm -f example chunks
