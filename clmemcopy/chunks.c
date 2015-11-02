@@ -35,7 +35,7 @@ cl_device_id find_device(cl_device_type type) {
     status = clGetPlatformIDs(0, NULL, &nPlatforms);
     check_status(status);
 
-    fprintf(stderr, "Found %d platforms.\n", nPlatforms);
+    fprintf(stderr, "# Found %d platforms.\n", nPlatforms);
     
 
     // Allocate space for the platform IDs.
@@ -47,7 +47,7 @@ cl_device_id find_device(cl_device_type type) {
 
     // Try each platform until we find a device.
     for(int i = 0; i < nPlatforms; ++i) {
-        fprintf(stderr, "Trying platform %d.\n", i);
+        fprintf(stderr, "# Trying platform %d.\n", i);
         // Pick the first platform.
         cl_platform_id platform = platforms[i];
 
@@ -56,13 +56,13 @@ cl_device_id find_device(cl_device_type type) {
         status = clGetDeviceIDs(platform, type, 0, NULL, &n_dev);
 
         if(CL_DEVICE_NOT_FOUND == status) {
-            fprintf(stderr, "No devices found on platform %d.\n", i);
+            fprintf(stderr, "# No devices found on platform %d.\n", i);
             continue;
         }
 
         check_status(status);
         
-        fprintf(stderr, "Found %d devices on platform %d.\n", n_dev, i);
+        fprintf(stderr, "# Found %d devices on platform %d.\n", n_dev, i);
         
         // Allocate space for the device IDs
         cl_device_id *devices = NULL;
@@ -87,6 +87,8 @@ cl_device_id find_device(cl_device_type type) {
 int main() {
     cl_int status;
 
+    printf("name: clmemcopy-chunks\n");
+    
     // Find the platforms
     g_device = find_device(CL_DEVICE_TYPE_GPU
                            | CL_DEVICE_TYPE_ACCELERATOR);
@@ -95,7 +97,7 @@ int main() {
     char n[256];
     clGetDeviceInfo(g_device, CL_DEVICE_NAME, sizeof(n), n, NULL);
 
-    fprintf(stderr, "Selected device: %s\n", n);
+    printf("device: %s\n", n);
 
 // Create a context for the devices.
     g_context = clCreateContext(0, 1, &g_device,
@@ -146,14 +148,15 @@ int main() {
                                          // returned event.
     check_status(status);
 
-    fprintf(stderr, "BYTES,TIME (ms)\n");
+    printf("results:\n");
 
     // i is the chunk size.
     for(int i = 65536; i <= SIZE; i <<= 1) {
-		//fprintf(stderr, "chunk size %d\n", i);
-        uint64_t start = time_ns();
+	    printf("- chunk_size: %d\n", i);
+	    printf("  raw_data:\n");
+	    printf("    total_time:\n");
         for(int j = 0; j < REPS; j++) {
-            // Copy the data
+	        uint64_t start = time_ns();
             for(int base = 0; base < SIZE; base += i) {
                 status = clEnqueueWriteBuffer(g_queue,
                                               gpu,
@@ -167,10 +170,9 @@ int main() {
                 // returned event.
                 check_status(status);
             }
+            uint64_t stop = time_ns();
+            printf("    - %f\n", ((double)(stop - start)) / 1e9);
         }
-        uint64_t stop = time_ns();
-        printf("%d,%f\n",
-               i, ((double)(stop - start)) / (1e6 * REPS));
     }
 
 	// Clean up
