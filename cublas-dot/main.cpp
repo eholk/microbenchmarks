@@ -44,20 +44,27 @@ float cublas_dot(int N, float *A, float *B) {
 int main() {
     cublasInit();
 
+    cout << "name: cublas-dotprod" << endl
+         << "results:" << endl;
+    
     for(int i = 1; i <= 134; i+=2) {
         const int N = 1000000 * i;
 
         float *A = generate_vector(N);
         float *B = generate_vector(N);
 
-        long long start = PAPI_get_real_usec();
+        cout << "results:" << endl
+             << "- vector_size: " << N << endl
+             << "  raw_data:" << endl
+             << "    total_time:" << endl;
+        
 
-        for(int i = 0; i < 10; ++i)
+        for(int i = 0; i < 10; ++i) {
+	        long long start = PAPI_get_real_usec();
             cublas_dot(N, A, B);
-
-        long long stop = PAPI_get_real_usec();
-
-        cout << N << "\t" << stop - start << endl;
+            long long stop = PAPI_get_real_usec();
+            cout << "    - " << double(stop - start) / 1e9 << endl;
+        }
 
         free(A);
         free(B);
