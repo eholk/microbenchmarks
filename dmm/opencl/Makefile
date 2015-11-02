@@ -6,7 +6,7 @@ LIBS=-lOpenCL
 CXXFLAGS=$(INCLUDE) $(LIBS) \
 	-std=c++11
 
-opencl-dmm: main.cpp dmm_kernel.h
+opencl-dmm: main.cpp dmm_kernel.h ../common.hpp
 	$(CXX) $(CXXFLAGS) main.cpp -o opencl-dmm
 
 dmm_kernel.h: dmm_kernel.cl

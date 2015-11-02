@@ -77,34 +77,7 @@ int main() {
 
     cout << "name: cublas-dmm" << endl;
 
-    cout << "results:" << endl;
-    for(int N = 1; N <= 634; N+=2) {
-        AdvancedBenchmarkRunner runner;
-        CublasDmmBenchmark bench(N);
-
-        runner.setNumTrials(50);
-        runner.run(bench);
-
-        auto width = runner.confidenceWidth();
-        auto interval = runner.confidenceInterval();
-
-        cout << "- matrix_size: " << N << endl;
-
-        cout << "  raw_data:" << endl
-             << "    total_time:" << endl;
-        for(auto i = 0; i < runner.getNumTrials(); ++i) {
-            cout << "    - " << runner.getSample(i) << endl;
-        }
-
-        cout << "  summary:" << endl
-             << "    total_time:" << endl
-             << "      sample_size:         " << runner.getNumTrials() << endl
-             << "      mean:                " << runner.timePerIteration() << endl
-             << "      std_dev:             " << runner.getStdDev() << endl
-             << "      confidence_width:    " << width << endl
-             << "      confidence_interval: [" << get<0>(interval) << ", " << get<1>(interval) << "]"
-             << endl;
-    }
-
+    run_benchmark<CublasDmmBenchmark>();
+    
     cublasDestroy(handle);
 }

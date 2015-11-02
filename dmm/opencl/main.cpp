@@ -13,21 +13,50 @@ using namespace cl;
 
 class OpenCLDmmBenchmark : public DmmBenchmark
 {
-	Context &ctx;
-	CommandQueue &queue;
-	Kernel &k;
-	
+		Context &ctx;
+		CommandQueue &queue;
+		Kernel &k;
 public:
-	OpenCLDmmBenchmark(Kernel &k, Context &ctx, CommandQueue &queue, int N)
-		: ctx(ctx), queue(queue), DmmBenchmark(N)
+	struct Params {
+		Params(Context &ctx, CommandQueue &&queue, Kernel &&k)
+			: ctx(ctx), queue(queue), k(k)
+		{}
+		
+		Context &ctx;
+		CommandQueue &queue;
+		Kernel &k;
+	};
+	
+	OpenCLDmmBenchmark(int N, Params &params)
+		: ctx(params.ctx), queue(params.queue), DmmBenchmark(N), k(params.k)
 	{}
 
 	virtual void run_iteration() {
-		Buffer clA(A, A + N * N, true),
-			clB(B, B + N * N, true),
-			clC(CL_MEM_WRITE_ONLY, N * N * sizeof(A[0]));
+		auto size = sizeof(float) * N * N;
+		Buffer clA(ctx, CL_MEM_READ_ONLY, size),
+			   clB(ctx, CL_MEM_READ_ONLY, size),
+			   clC(ctx, CL_MEM_WRITE_ONLY, N * N * sizeof(A[0]));
 
-		// TODO:
+		Event copy_a, copy_b, kernel, copy_c;
+		
+		queue.enqueueWriteBuffer(clA, false, 0, size, A, NULL, &copy_a);
+		queue.enqueueWriteBuffer(clB, false, 0, size, B, NULL, &copy_b);
+
+		k.setArg(0, N);
+		k.setArg(1, clA);
+		k.setArg(2, clB);
+		k.setArg(3, clC);
+		
+		std::vector<Event> kernel_events = {copy_a, copy_b};
+		queue.enqueueNDRangeKernel(k,
+		                           NDRange(0, 0),
+		                           NDRange(N, N),
+		                           NullRange,
+		                           &kernel_events,
+		                           &kernel);
+		std::vector<Event> copy_c_events = {kernel};
+		queue.enqueueReadBuffer(clC, false, 0, size, C, &copy_c_events);
+		queue.finish();
 	}
 };
 
@@ -76,6 +105,11 @@ int main(int argc, const char **argv) {
 		cerr << "# Program build failure!" << endl;
 		cerr << prog.getBuildInfo<CL_PROGRAM_BUILD_LOG>(device);
 	}
+
+	run_benchmark<OpenCLDmmBenchmark>
+		(OpenCLDmmBenchmark::Params(ctx,
+		                            CommandQueue(ctx, device),
+		                            Kernel(prog, "dmm")));
 	
-	return 1;
+	return 0;
 }
