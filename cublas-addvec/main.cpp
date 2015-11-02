@@ -46,19 +46,25 @@ void cublas_addvec(int N, float *A, float *B) {
 int main() {
     cublasInit();
 
+    cout << "name: cublas-addvec" << endl
+         << "results:" << endl;
+    
     for(int N = 1000000; N <= MAX_SIZE; N += STEP) {
         float *A = generate_vector(N);
         float *B = generate_vector(N);
 
-        long long start = PAPI_get_real_usec();
-
+        cout << "results:" << endl
+             << "- vector_size: " << N << endl
+             << "  raw_data:" << endl
+             << "    total_time:" << endl;
+        
         for(int i = 0; i < NUM_TRIALS; ++i) {
-          cublas_addvec(N, A, B);
+	        long long start = PAPI_get_real_usec();
+	        cublas_addvec(N, A, B);
+	        long long stop = PAPI_get_real_usec();
+
+	        cout << "    - " << double(stop - start) / 1e9 << endl;
         }
-
-        long long stop = PAPI_get_real_usec();
-
-        cout << N << "\t" << (stop - start) / NUM_TRIALS << endl;
 
         free(A);
         free(B);
