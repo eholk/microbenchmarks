@@ -62,7 +62,7 @@ int main() {
 	        cublas_addvec(N, A, B);
 	        long long stop = PAPI_get_real_usec();
 
-	        cout << "    - " << double(stop - start) / 1e9 << endl;
+	        cout << "    - " << double(stop - start) / 1e6 << endl;
         }
 
         free(A);
